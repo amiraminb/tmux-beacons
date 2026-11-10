@@ -45,28 +45,28 @@ pad_left() {
 }
 
 render() {
-    local now beacon pane session index window title label epoch color i
-    local panes=() labels=() sessions=() indexes=() windows=() titles=() ages=()
-    local w_label=0 w_session=0 w_index=0 w_window=0 w_title=0 w_age=0
+    local now beacon pane session index window title label epoch color i plain name
+    local panes=() names=() plains=() labels=() ages=()
+    local w_name=0 w_label=0 w_age=0
     now=$(date +%s)
 
     while IFS="$TAB" read -r beacon pane session index window title; do
         epoch="${beacon%%|*}"
         label="${beacon#*|}"
-        session="[$session]"
         title=$(claude_name "$title")
+        plain="[$session]$window"
+        name="\033[1m[$session]\033[0m$window"
+        if [ -n "$title" ]; then
+            plain="$plain : $title"
+            name="$name\033[2m : \033[0m\033[36m$title\033[0m"
+        fi
         panes+=("$pane")
+        names+=("$name")
+        plains+=("$plain")
         labels+=("$label")
-        sessions+=("$session")
-        indexes+=("$index")
-        windows+=("$window")
-        titles+=("$title")
         ages+=("$(age $((now - epoch)))")
+        [ "${#plain}" -gt "$w_name" ] && w_name=${#plain}
         [ "${#label}" -gt "$w_label" ] && w_label=${#label}
-        [ "${#session}" -gt "$w_session" ] && w_session=${#session}
-        [ "${#index}" -gt "$w_index" ] && w_index=${#index}
-        [ "${#window}" -gt "$w_window" ] && w_window=${#window}
-        [ "${#title}" -gt "$w_title" ] && w_title=${#title}
         [ "${#ages[${#ages[@]}-1]}" -gt "$w_age" ] && w_age=${#ages[${#ages[@]}-1]}
     done < <(list_beacons)
 
@@ -76,11 +76,9 @@ render() {
             question) color=33 ;;
             *) color=32 ;;
         esac
-        printf '%s\t\033[%sm●\033[0m \033[%s;2m%s\033[0m  \033[1m%s\033[0m  \033[2m%s.\033[0m%s  \033[36m%s\033[0m  \033[2m%s\033[0m\n' \
-            "${panes[$i]}" "$color" "$color" "$(pad "${labels[$i]}" "$w_label")" \
-            "$(pad "${sessions[$i]}" "$w_session")" \
-            "$(pad_left "${indexes[$i]}" "$w_index")" "$(pad "${windows[$i]}" "$w_window")" \
-            "$(pad "${titles[$i]}" "$w_title")" "$(pad_left "${ages[$i]}" "$w_age")"
+        printf '%s\t%b%*s  \033[%sm%s\033[0m  \033[2m%s\033[0m\n' \
+            "${panes[$i]}" "${names[$i]}" $((w_name - ${#plains[$i]})) '' \
+            "$color" "$(pad "${labels[$i]}" "$w_label")" "$(pad_left "${ages[$i]}" "$w_age")"
     done
 }
 
@@ -96,12 +94,9 @@ if [ -z "$(list_beacons)" ]; then
     exit 0
 fi
 
-selected=$(render | fzf --ansi --no-sort --reverse --no-multi \
+selected=$(render | fzf --ansi --no-sort \
     --delimiter="$TAB" --with-nth=2.. \
-    --info=inline-right --no-separator --no-scrollbar \
-    --prompt='› ' --pointer='▌' \
-    --color='prompt:cyan,pointer:cyan,header:dim,info:dim,hl:yellow,hl+:yellow' \
-    --header='enter jump · ctrl-x clear · ctrl-r clear all · esc close' \
+    --header='enter: jump | ctrl-x: clear | ctrl-r: clear all | esc: close' \
     --bind "ctrl-x:execute-silent('$CURRENT_DIR/clear.sh' {1})+reload('$SELF' --list)" \
     --bind "ctrl-r:execute-silent('$CURRENT_DIR/clear.sh' --all)+reload('$SELF' --list)" |
     cut -f1)

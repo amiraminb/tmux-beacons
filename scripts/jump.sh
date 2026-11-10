@@ -13,13 +13,11 @@ if [ -z "$pane" ]; then
     exit 0
 fi
 
-if ! tmux display-message -p -t "$pane" '' >/dev/null 2>&1; then
-    refresh_count
+if ! tmux switch-client ${client:+-c "$client"} -t "$pane" \; \
+    select-window -t "$pane" \; \
+    select-pane -t "$pane" \; \
+    set-option -pu -t "$pane" @beacon 2>/dev/null; then
     tmux display-message ${client:+-c "$client"} "beacons: pane $pane no longer exists"
-    exit 0
 fi
 
-tmux switch-client ${client:+-c "$client"} -t "$pane"
-tmux select-window -t "$pane"
-tmux select-pane -t "$pane"
-"$CURRENT_DIR/clear.sh" "$pane"
+refresh_count

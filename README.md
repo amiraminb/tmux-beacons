@@ -1,6 +1,6 @@
 # tmux-beacons
 
-A beacon lights on a tmux pane when Claude Code finishes a response or waits for you. Open the list, see the last output of each pane, and jump to it. A beacon clears when you visit its pane.
+A beacon lights on a tmux pane when Claude Code finishes a response or waits for you. Open the list, pick a pane, and jump to it. A beacon clears when you visit its pane.
 
 | Label | Lit by |
 |---|---|
@@ -12,8 +12,8 @@ A beacon is not lit when you already look at the pane. It clears when the pane g
 
 ## Requirements
 
-- tmux 3.3 or later
-- fzf 0.42 or later
+- tmux 3.2 or later
+- fzf
 - Claude Code with plugin support
 
 ## Install
@@ -43,10 +43,10 @@ claude plugin install tmux-beacons@tmux-beacons
 
 | Key | Action |
 |---|---|
-| `prefix b` | Open the beacons popup (sized to its rows) |
+| `prefix b` | Open the beacons list (full-screen fzf in a temporary window) |
 | `prefix B` | Jump to the first beacon in the list |
 
-In the popup:
+In the list:
 
 | Key | Action |
 |---|---|
@@ -67,7 +67,7 @@ set -g status-right "#{?@beacons_count,[beacon: #{@beacons_count}] ,}..."
 
 | Option | Default | Meaning |
 |---|---|---|
-| `@beacons-key` | `b` | Prefix key for the popup |
+| `@beacons-key` | `b` | Prefix key for the list |
 | `@beacons-jump-key` | `B` | Prefix key to jump to the first beacon |
 | `@beacons-order` | `oldest` | List order: `oldest` or `newest` first |
 | `@beacons-hook-index` | `42` | Index for the tmux hooks this plugin registers |
