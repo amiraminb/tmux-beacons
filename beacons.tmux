@@ -8,7 +8,9 @@ key=$(get_opt @beacons-key b)
 jump_key=$(get_opt @beacons-jump-key B)
 index=$(get_opt @beacons-hook-index 42)
 
-tmux bind-key "$key" run-shell -b "'$SCRIPTS_DIR/open.sh' '#{client_name}'"
+tmux bind-key "$key" if-shell -F '#{@beacons_count}' \
+    "new-window -n beacons \"'$SCRIPTS_DIR/menu.sh'\"" \
+    "display-message 'beacons: none'"
 tmux bind-key "$jump_key" run-shell -b "'$SCRIPTS_DIR/jump.sh' '' '#{client_name}'"
 
 # Indexed hooks: an unindexed `set-hook -g` replaces every entry of that hook,
