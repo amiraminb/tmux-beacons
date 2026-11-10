@@ -55,13 +55,15 @@ In the list:
 | `ctrl-r` | Clear all beacons |
 | `esc` | Close |
 
-## Status bar
+## Notification
 
-`@beacons_count` holds the number of lit beacons and updates at once. Example for `status-right`:
+When a beacon lights, every attached client shows a toast in the tmux message line for 4 seconds:
 
-```tmux
-set -g status-right "#{?@beacons_count,[beacon: #{@beacons_count}] ,}..."
 ```
+beacon: [backend]code-review-project : Tmux alerts for Claude completion (done)
+```
+
+`@beacons_count` also holds the number of lit beacons, for a status bar such as `#{?@beacons_count,[beacon: #{@beacons_count}] ,}`.
 
 ## Options
 
@@ -69,6 +71,8 @@ set -g status-right "#{?@beacons_count,[beacon: #{@beacons_count}] ,}..."
 |---|---|---|
 | `@beacons-key` | `b` | Prefix key for the list |
 | `@beacons-jump-key` | `B` | Prefix key to jump to the first beacon |
+| `@beacons-toast` | `on` | Show a toast when a beacon lights (`on` or `off`) |
+| `@beacons-toast-duration` | `4000` | Toast duration in milliseconds |
 | `@beacons-order` | `oldest` | List order: `oldest` or `newest` first |
 | `@beacons-hook-index` | `42` | Index for the tmux hooks this plugin registers |
 

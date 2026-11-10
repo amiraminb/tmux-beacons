@@ -28,3 +28,19 @@ refresh_count() {
         tmux refresh-client -S -t "$client"
     done
 }
+
+TITLE_MAX=50
+
+# Claude sets the pane title to "<status glyph> <session name>", and to
+# "Claude Code" when the session has no name.
+claude_name_into() {
+    local _name="$2"
+    if [[ "$_name" =~ ^[^[:alnum:][:space:]]+[[:space:]]+(.*)$ ]]; then
+        _name="${BASH_REMATCH[1]}"
+    fi
+    [ "$_name" = "Claude Code" ] && _name=""
+    if [ "${#_name}" -gt "$TITLE_MAX" ]; then
+        _name="${_name:0:$((TITLE_MAX - 1))}…"
+    fi
+    printf -v "$1" '%s' "$_name"
+}
