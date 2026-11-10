@@ -60,7 +60,7 @@ In the popup:
 `@beacons_count` holds the number of lit beacons and updates at once. Example for `status-right`:
 
 ```tmux
-set -g status-right "#{?@beacons_count,#[fg=red]● #{@beacons_count}#[default] ,}..."
+set -g status-right "#{?@beacons_count,[beacon: #{@beacons_count}] ,}..."
 ```
 
 ## Options
