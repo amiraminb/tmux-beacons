@@ -1,0 +1,12 @@
+{
+  "name": "tmux-beacons",
+  "description": "tmux-beacons Claude Code hooks",
+  "owner": { "name": "amiraminb" },
+  "plugins": [
+    {
+      "name": "tmux-beacons",
+      "source": "./",
+      "description": "Light a tmux beacon on the pane where Claude finishes or waits for you"
+    }
+  ]
+}

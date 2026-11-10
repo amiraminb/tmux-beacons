@@ -1,0 +1,7 @@
+{
+  "name": "tmux-beacons",
+  "version": "0.1.0",
+  "description": "Light a tmux beacon on the pane where Claude finishes or waits for you",
+  "author": { "name": "amiraminb" },
+  "repository": "https://github.com/amiraminb/tmux-beacons"
+}
