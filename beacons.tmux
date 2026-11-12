@@ -22,4 +22,9 @@ for hook in pane-exited after-kill-pane window-unlinked session-closed; do
         "if-shell -F '#{@beacons_count}' \"run-shell -b \\\"'$SCRIPTS_DIR/count.sh'\\\"\""
 done
 
+tmux set-option -goq @beacons-icon '✳' \; \
+    set-option -goq @beacons-color default \; \
+    set-option -g @beacons_status \
+    '#{?@beacons_count,#[fg=#{@beacons-color}][#{@beacons-icon} #{@beacons_count}]#[fg=default] ,}'
+
 refresh_count

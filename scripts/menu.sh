@@ -7,6 +7,7 @@ export LC_ALL="${LC_ALL:-en_US.UTF-8}"
 
 SELF="$CURRENT_DIR/menu.sh"
 TAB=$'\t'
+TITLE_MAX=50
 
 # age_into and claude_name_into write to the variable named in $1, so
 # render does not fork a subshell for every row.
@@ -22,6 +23,20 @@ age_into() {
         _text="$((_secs / 86400))d"
     fi
     printf -v "$1" '%s' "$_text"
+}
+
+# Claude sets the pane title to "<status glyph> <session name>", and to
+# "Claude Code" when the session has no name.
+claude_name_into() {
+    local _name="$2"
+    if [[ "$_name" =~ ^[^[:alnum:][:space:]]+[[:space:]]+(.*)$ ]]; then
+        _name="${BASH_REMATCH[1]}"
+    fi
+    [ "$_name" = "Claude Code" ] && _name=""
+    if [ "${#_name}" -gt "$TITLE_MAX" ]; then
+        _name="${_name:0:$((TITLE_MAX - 1))}…"
+    fi
+    printf -v "$1" '%s' "$_name"
 }
 
 render() {

@@ -55,15 +55,21 @@ In the list:
 | `ctrl-r` | Clear all beacons |
 | `esc` | Close |
 
-## Notification
+## Status bar
 
-When a beacon lights, every attached client shows a toast in the tmux message line for 4 seconds:
+Put `#{E:@beacons_status}` in `status-right`:
+
+```tmux
+set -g status-right "#{E:@beacons_status}%H:%M"
+```
+
+It shows the number of lit beacons, with a trailing space, and hides when no beacon is lit:
 
 ```
-beacon: [backend]code-review-project : Tmux alerts for Claude completion (done)
+[✳ 2] 14:15
 ```
 
-`@beacons_count` also holds the number of lit beacons, for a status bar such as `#{?@beacons_count,[beacon: #{@beacons_count}] ,}`.
+For a custom segment, use `@beacons_count`, the number of lit beacons.
 
 ## Options
 
@@ -71,8 +77,8 @@ beacon: [backend]code-review-project : Tmux alerts for Claude completion (done)
 |---|---|---|
 | `@beacons-key` | `b` | Prefix key for the list |
 | `@beacons-jump-key` | `B` | Prefix key to jump to the first beacon |
-| `@beacons-toast` | `on` | Show a toast when a beacon lights (`on` or `off`) |
-| `@beacons-toast-duration` | `4000` | Toast duration in milliseconds |
+| `@beacons-icon` | `✳` | Icon in the status segment |
+| `@beacons-color` | `default` | Status segment color; `default` uses the `status-style` color |
 | `@beacons-order` | `oldest` | List order: `oldest` or `newest` first |
 | `@beacons-hook-index` | `42` | Index for the tmux hooks this plugin registers |
 
